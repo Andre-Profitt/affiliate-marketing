@@ -1,10 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import ErrorBoundary from './components/ErrorBoundary';
 import './scss/style.scss';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+console.log('Main.jsx is loading');
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>
 );
+
+console.log('React app should be mounted');

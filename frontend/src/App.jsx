@@ -1,35 +1,28 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { CSpinner } from '@coreui/react';
+import React from 'react';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import './scss/style.scss';
 
-// Containers
-const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'));
-
-// Pages
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
-const Products = React.lazy(() => import('./views/products/Products'));
-const Campaigns = React.lazy(() => import('./views/campaigns/Campaigns'));
-const Analytics = React.lazy(() => import('./views/analytics/Analytics'));
+// Direct imports to avoid lazy loading issues
+import DefaultLayout from './layout/DefaultLayout';
+import Dashboard from './views/dashboard/Dashboard';
+import Products from './views/products/Products';
+import Campaigns from './views/campaigns/Campaigns';
+import Analytics from './views/analytics/Analytics';
 
 function App() {
+  console.log('App component is rendering');
+  
   return (
     <BrowserRouter>
-      <Suspense fallback={
-        <div className="pt-3 text-center">
-          <CSpinner color="primary" variant="grow" />
-        </div>
-      }>
-        <Routes>
-          <Route path="/" element={<DefaultLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="products" element={<Products />} />
-            <Route path="campaigns" element={<Campaigns />} />
-            <Route path="analytics" element={<Analytics />} />
-          </Route>
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/" element={<DefaultLayout />}>
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="products" element={<Products />} />
+          <Route path="campaigns" element={<Campaigns />} />
+          <Route path="analytics" element={<Analytics />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }
