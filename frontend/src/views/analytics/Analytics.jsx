@@ -20,7 +20,7 @@ import {
 } from '@coreui/react';
 import { CChartLine, CChartBar, CChartPie } from '@coreui/react-chartjs';
 import CIcon from '@coreui/icons-react';
-import { cilCalendar, cilCloudDownload } from '@coreui/icons-react';
+import { cilCalendar, cilCloudDownload } from '@coreui/icons';
 import axios from 'axios';
 
 const Analytics = () => {

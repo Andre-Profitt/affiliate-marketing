@@ -37,7 +37,7 @@ import {
   cilMediaPause,
   cilChartLine,
   cilShare
-} from '@coreui/icons-react';
+} from '@coreui/icons';
 import axios from 'axios';
 
 const Campaigns = () => {

@@ -28,7 +28,7 @@ import {
   CAlert
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilSearch, cilLink, cilCopy, cilExternalLink } from '@coreui/icons-react';
+import { cilSearch, cilLink, cilCopy, cilExternalLink } from '@coreui/icons';
 import axios from 'axios';
 
 const Products = () => {
