@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  affiliate-mcp-server:
+    build: .
+    container_name: affiliate-mcp-server
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+    env_file:
+      - .env
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./tests:/usr/src/app/tests
+    depends_on:
+      - redis
+    networks:
+      - affiliate-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: affiliate-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - affiliate-network
+    command: redis-server --appendonly yes
+
+  # Optional: MongoDB for persistent storage
+  mongodb:
+    image: mongo:6
+    container_name: affiliate-mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=affiliate_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - affiliate-network
+
+volumes:
+  redis-data:
+  mongo-data:
+
+networks:
+  affiliate-network:
+    driver: bridge

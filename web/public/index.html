@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Dashboard - Produtos Trending</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">🚀</span>
+                    Affiliate Pro Dashboard
+                </h1>
+                <div class="header-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="total-products">0</span>
+                        <span class="stat-label">Produtos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="selected-count">0</span>
+                        <span class="stat-label">Selecionados</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Filters Section -->
+            <section class="filters-section">
+                <div class="filters-row">
+                    <!-- Platform Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Plataforma</label>
+                        <div class="platform-buttons">
+                            <button class="platform-btn active" data-platform="both">
+                                <span class="platform-icon">🛍️</span>
+                                Todas
+                            </button>
+                            <button class="platform-btn" data-platform="amazon">
+                                <span class="platform-icon">📦</span>
+                                Amazon
+                            </button>
+                            <button class="platform-btn" data-platform="shopee">
+                                <span class="platform-icon">🛒</span>
+                                Shopee
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Categoria</label>
+                        <div class="category-pills" id="category-pills">
+                            <!-- Categories will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="refresh-btn">
+                            <span class="btn-icon">🔄</span>
+                            Atualizar
+                        </button>
+                        <button class="btn btn-success" id="create-campaign-btn" disabled>
+                            <span class="btn-icon">📢</span>
+                            Criar Campanha (<span id="campaign-count">0</span>)
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div class="loading-container" id="loading">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Descobrindo produtos trending...</p>
+            </div>
+
+            <!-- Products Grid -->
+            <section class="products-section" id="products-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="title-icon">🔥</span>
+                        Top 10 Produtos Trending
+                    </h2>
+                    <div class="ai-insights" id="ai-insights"></div>
+                </div>
+
+                <div class="products-grid" id="products-grid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Selected Products Panel -->
+            <div class="selected-panel" id="selected-panel">
+                <div class="panel-header">
+                    <h3>Produtos Selecionados</h3>
+                    <button class="close-btn" id="close-panel">&times;</button>
+                </div>
+                <div class="selected-products" id="selected-products"></div>
+                <div class="panel-actions">
+                    <input type="text" 
+                           class="campaign-name-input" 
+                           id="campaign-name" 
+                           placeholder="Nome da campanha...">
+                    <button class="btn btn-primary btn-block" id="generate-campaign">
+                        Gerar Links e Conteúdo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Affiliate Link Modal -->
+    <div class="modal" id="link-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Link de Afiliado Gerado! 🎉</h3>
+                <button class="close-btn" onclick="closeModal('link-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="link-display">
+                    <input type="text" class="link-input" id="affiliate-link" readonly>
+                    <button class="copy-btn" onclick="copyLink()">
+                        <span class="copy-icon">📋</span>
+                        Copiar
+                    </button>
+                </div>
+                <div class="link-stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">🏷️</span>
+                        <span id="link-product-name"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">💰</span>
+                        <span id="link-product-price"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Results Modal -->
+    <div class="modal" id="campaign-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Campanha Criada com Sucesso! 🚀</h3>
+                <button class="close-btn" onclick="closeModal('campaign-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="campaign-results" id="campaign-results">
+                    <!-- Campaign results will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toast-icon">✓</span>
+        <span class="toast-message" id="toast-message"></span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

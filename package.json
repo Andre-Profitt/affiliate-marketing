@@ -1,0 +1,48 @@
+{
+  "name": "affiliate-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for affiliate marketing automation with Amazon Brazil and Shopee",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "web": "node web/server.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "mcp",
+    "affiliate",
+    "amazon",
+    "shopee",
+    "whatsapp",
+    "instagram"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "axios": "^1.10.0",
+    "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "instagram-private-api": "^1.45.3",
+    "mongodb": "^6.0.0",
+    "node-cron": "^3.0.2",
+    "openai": "^4.0.0",
+    "p-queue": "^7.4.1",
+    "paapi5-nodejs-sdk": "^1.0.0",
+    "puppeteer": "^21.0.0",
+    "redis": "^4.6.0",
+    "sharp": "^0.32.0",
+    "whatsapp-web.js": "^1.23.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
+  }
+}
