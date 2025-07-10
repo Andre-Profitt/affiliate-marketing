@@ -34,7 +34,7 @@ import {
   cilAccountLogout,
   cilMoon,
   cilSun
-} from '@coreui/icons-react';
+} from '@coreui/icons';
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
@@ -43,7 +43,6 @@ const DefaultLayout = () => {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    // Apply dark mode class to body
     if (darkMode) {
       document.body.classList.add('dark-theme');
     } else {
@@ -55,32 +54,32 @@ const DefaultLayout = () => {
     <div>
       <CSidebar position="fixed" visible={sidebarShow}>
         <CSidebarBrand className="d-none d-md-flex">
-          <CIcon className="sidebar-brand-full" icon={cilCart} height={35} />
+          <CIcon icon={cilCart} height={35} />
           <span className="ms-2">Affiliate Pro</span>
         </CSidebarBrand>
         <CSidebarNav>
           <CNavTitle>Menu Principal</CNavTitle>
           <CNavItem>
             <CNavLink as={NavLink} to="/dashboard">
-              <CIcon icon={cilSpeedometer} className="nav-icon" />
+              <CIcon icon={cilSpeedometer} customClassName="nav-icon" />
               Dashboard
             </CNavLink>
           </CNavItem>
           <CNavItem>
             <CNavLink as={NavLink} to="/products">
-              <CIcon icon={cilCart} className="nav-icon" />
+              <CIcon icon={cilCart} customClassName="nav-icon" />
               Produtos
             </CNavLink>
           </CNavItem>
           <CNavItem>
             <CNavLink as={NavLink} to="/campaigns">
-              <CIcon icon={cilBullhorn} className="nav-icon" />
+              <CIcon icon={cilBullhorn} customClassName="nav-icon" />
               Campanhas
             </CNavLink>
           </CNavItem>
           <CNavItem>
             <CNavLink as={NavLink} to="/analytics">
-              <CIcon icon={cilChartPie} className="nav-icon" />
+              <CIcon icon={cilChartPie} customClassName="nav-icon" />
               Análises
             </CNavLink>
           </CNavItem>

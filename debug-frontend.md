@@ -92,3 +92,21 @@ If still not working, please share:
 4. Browser and version you're using
 
 The ErrorBoundary component will now catch and display any React errors on screen.
+
+
+## 🚨 Quick Test - Try This:
+
+To test if CoreUI is working, temporarily use the minimal app:
+
+```bash
+cd frontend
+# Backup current App
+cp src/App.jsx src/App.jsx.full
+# Use minimal version
+cp src/MinimalApp.jsx src/App.jsx
+# Restart
+npm run dev
+```
+
+If you see a styled card, CoreUI works and the issue is with routing.
+If still blank, check browser console for errors.
