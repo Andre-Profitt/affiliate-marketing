@@ -33,7 +33,7 @@ import axios from 'axios';
 
 const Products = () => {
   const [query, setQuery] = useState('');
-  const [platform, setPlatform] = useState('all');
+  const [platform, setPlatform] = useState('shopee');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -42,72 +42,52 @@ const Products = () => {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
 
-  // Mock data for demonstration
-  const mockProducts = [
-    {
-      id: '1',
-      name: 'iPhone 15 Pro Max 256GB',
-      price: 8999.99,
-      originalPrice: 9999.99,
-      platform: 'shopee',
-      image: 'https://via.placeholder.com/150',
-      rating: 4.8,
-      sold: 1250,
-      discount: 10,
-      seller: 'Apple Store Official'
-    },
-    {
-      id: '2',
-      name: 'Samsung Galaxy S24 Ultra',
-      price: 7499.99,
-      originalPrice: 8499.99,
-      platform: 'amazon',
-      image: 'https://via.placeholder.com/150',
-      rating: 4.7,
-      sold: 890,
-      discount: 12,
-      seller: 'Samsung Brasil'
-    }
-  ];
-
   const handleSearch = async () => {
     setLoading(true);
     setError('');
     try {
-      const token = localStorage.getItem('token');
-      // const response = await axios.get(`http://localhost:3000/api/products/search`, {
-      //   params: { q: query, platform },
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      // setProducts(response.data);
+      const token = localStorage.getItem('authToken');
+      const response = await axios.get(`http://localhost:3000/api/affiliate/products/search`, {
+        params: { q: query, platform },
+        headers: { Authorization: `Bearer ${token}` }
+      });
       
-      // Mock data for now
-      setTimeout(() => {
-        setProducts(mockProducts);
-        setLoading(false);
-      }, 1000);
+      if (response.data.success) {
+        setProducts(response.data.products);
+      } else {
+        setError(response.data.message || 'Erro ao buscar produtos');
+      }
     } catch (error) {
       console.error('Error searching products:', error);
-      setError('Erro ao buscar produtos. Tente novamente.');
+      if (error.response?.status === 401) {
+        setError('Sessão expirada. Faça login novamente.');
+        // Redirect to login
+        window.location.href = '/login';
+      } else if (error.response?.status === 429) {
+        setError('Muitas requisições. Aguarde um momento.');
+      } else {
+        setError('Erro ao buscar produtos. Tente novamente.');
+      }
+    } finally {
       setLoading(false);
     }
   };
 
   const generateLink = async (product) => {
     try {
-      const token = localStorage.getItem('token');
-      // const response = await axios.post(`http://localhost:3000/api/products/affiliate-link`, {
-      //   productId: product.id,
-      //   platform: product.platform
-      // }, {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      // setAffiliateLink(response.data.link);
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post(`http://localhost:3000/api/affiliate/links/generate`, {
+        productId: product._id,
+        url: product.url
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       
-      // Mock affiliate link
-      setAffiliateLink(`https://affiliate.link/${product.platform}/${product.id}?ref=user123`);
-      setSelectedProduct(product);
-      setShowModal(true);
+      if (response.data.success) {
+        setAffiliateLink(response.data.affiliateUrl);
+        setSelectedProduct(product);
+        setShowModal(true);
+      }
     } catch (error) {
       console.error('Error generating link:', error);
       setError('Erro ao gerar link de afiliado.');
@@ -129,6 +109,13 @@ const Products = () => {
     return badges[platform] || <CBadge color="secondary">{platform}</CBadge>;
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price);
+  };
+
   return (
     <>
       <CRow>
@@ -136,7 +123,7 @@ const Products = () => {
           <CCard className="mb-4">
             <CCardHeader>
               <strong>Pesquisar Produtos</strong>
-              <span className="small ms-1">Encontre produtos para promover</span>
+              <span className="small ms-1">Encontre produtos reais para promover</span>
             </CCardHeader>
             <CCardBody>
               {error && (
@@ -161,17 +148,16 @@ const Products = () => {
                 </CCol>
                 <CCol md={3}>
                   <CFormSelect value={platform} onChange={(e) => setPlatform(e.target.value)}>
-                    <option value="all">Todas Plataformas</option>
                     <option value="shopee">Shopee</option>
-                    <option value="amazon">Amazon</option>
-                    <option value="mercadolivre">Mercado Livre</option>
+                    <option value="amazon" disabled>Amazon (em breve)</option>
+                    <option value="mercadolivre" disabled>Mercado Livre (em breve)</option>
                   </CFormSelect>
                 </CCol>
                 <CCol md={3}>
                   <CButton 
                     color="primary" 
                     onClick={handleSearch} 
-                    disabled={loading || !query}
+                    disabled={loading || !query || query.length < 2}
                     className="w-100"
                   >
                     {loading ? (
@@ -190,83 +176,101 @@ const Products = () => {
               </CRow>
 
               {products.length > 0 && (
-                <CTable hover responsive>
-                  <CTableHead>
-                    <CTableRow>
-                      <CTableHeaderCell>Produto</CTableHeaderCell>
-                      <CTableHeaderCell>Preço</CTableHeaderCell>
-                      <CTableHeaderCell className="text-center">Avaliação</CTableHeaderCell>
-                      <CTableHeaderCell className="text-center">Vendidos</CTableHeaderCell>
-                      <CTableHeaderCell className="text-center">Plataforma</CTableHeaderCell>
-                      <CTableHeaderCell className="text-center">Ações</CTableHeaderCell>
-                    </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                    {products.map((product) => (
-                      <CTableRow key={product.id}>
-                        <CTableDataCell>
-                          <div className="d-flex align-items-center">
-                            <CImage
-                              src={product.image}
-                              width={50}
-                              height={50}
-                              className="me-3 rounded"
-                            />
-                            <div>
-                              <div className="fw-semibold">{product.name}</div>
-                              <div className="small text-muted">{product.seller}</div>
-                            </div>
-                          </div>
-                        </CTableDataCell>
-                        <CTableDataCell>
-                          <div className="fw-bold text-success">
-                            R$ {product.price.toFixed(2)}
-                          </div>
-                          {product.discount > 0 && (
-                            <div className="small">
-                              <del className="text-muted">R$ {product.originalPrice.toFixed(2)}</del>
-                              <CBadge color="danger" className="ms-2">-{product.discount}%</CBadge>
-                            </div>
-                          )}
-                        </CTableDataCell>
-                        <CTableDataCell className="text-center">
-                          <div>⭐ {product.rating}</div>
-                        </CTableDataCell>
-                        <CTableDataCell className="text-center">
-                          {product.sold.toLocaleString()}
-                        </CTableDataCell>
-                        <CTableDataCell className="text-center">
-                          {getPlatformBadge(product.platform)}
-                        </CTableDataCell>
-                        <CTableDataCell className="text-center">
-                          <CButtonGroup size="sm">
-                            <CTooltip content="Gerar Link de Afiliado">
-                              <CButton
-                                color="primary"
-                                onClick={() => generateLink(product)}
-                              >
-                                <CIcon icon={cilLink} />
-                              </CButton>
-                            </CTooltip>
-                            <CTooltip content="Ver na Loja">
-                              <CButton
-                                color="secondary"
-                                onClick={() => window.open(`https://${product.platform}.com`, '_blank')}
-                              >
-                                <CIcon icon={cilExternalLink} />
-                              </CButton>
-                            </CTooltip>
-                          </CButtonGroup>
-                        </CTableDataCell>
+                <>
+                  <div className="mb-3">
+                    <strong>{products.length}</strong> produtos encontrados
+                    {products[0]?.source === 'cache' && (
+                      <CBadge color="info" className="ms-2">Cache</CBadge>
+                    )}
+                  </div>
+                  <CTable hover responsive>
+                    <CTableHead>
+                      <CTableRow>
+                        <CTableHeaderCell>Produto</CTableHeaderCell>
+                        <CTableHeaderCell>Preço</CTableHeaderCell>
+                        <CTableHeaderCell className="text-center">Avaliação</CTableHeaderCell>
+                        <CTableHeaderCell className="text-center">Vendidos</CTableHeaderCell>
+                        <CTableHeaderCell className="text-center">Plataforma</CTableHeaderCell>
+                        <CTableHeaderCell className="text-center">Ações</CTableHeaderCell>
                       </CTableRow>
-                    ))}
-                  </CTableBody>
-                </CTable>
+                    </CTableHead>
+                    <CTableBody>
+                      {products.map((product) => (
+                        <CTableRow key={product._id || product.external_id}>
+                          <CTableDataCell>
+                            <div className="d-flex align-items-center">
+                              <CImage
+                                src={product.image}
+                                width={50}
+                                height={50}
+                                className="me-3 rounded"
+                                onError={(e) => {
+                                  e.target.src = 'https://via.placeholder.com/50';
+                                }}
+                              />
+                              <div>
+                                <div className="fw-semibold text-truncate" style={{ maxWidth: '300px' }}>
+                                  {product.name}
+                                </div>
+                                <div className="small text-muted">
+                                  {product.seller?.name || 'Vendedor'}
+                                </div>
+                              </div>
+                            </div>
+                          </CTableDataCell>
+                          <CTableDataCell>
+                            <div className="fw-bold text-success">
+                              {formatPrice(product.price)}
+                            </div>
+                            {product.original_price && product.original_price > product.price && (
+                              <div className="small">
+                                <del className="text-muted">{formatPrice(product.original_price)}</del>
+                                <CBadge color="danger" className="ms-2">
+                                  -{Math.round(product.discount || ((1 - product.price / product.original_price) * 100))}%
+                                </CBadge>
+                              </div>
+                            )}
+                          </CTableDataCell>
+                          <CTableDataCell className="text-center">
+                            <div>⭐ {product.rating?.toFixed(1) || 'N/A'}</div>
+                          </CTableDataCell>
+                          <CTableDataCell className="text-center">
+                            {product.sold?.toLocaleString('pt-BR') || '0'}
+                          </CTableDataCell>
+                          <CTableDataCell className="text-center">
+                            {getPlatformBadge(product.platform)}
+                          </CTableDataCell>
+                          <CTableDataCell className="text-center">
+                            <CButtonGroup size="sm">
+                              <CTooltip content="Gerar Link de Afiliado">
+                                <CButton
+                                  color="primary"
+                                  onClick={() => generateLink(product)}
+                                >
+                                  <CIcon icon={cilLink} />
+                                </CButton>
+                              </CTooltip>
+                              <CTooltip content="Ver na Loja">
+                                <CButton
+                                  color="secondary"
+                                  onClick={() => window.open(product.url, '_blank')}
+                                >
+                                  <CIcon icon={cilExternalLink} />
+                                </CButton>
+                              </CTooltip>
+                            </CButtonGroup>
+                          </CTableDataCell>
+                        </CTableRow>
+                      ))}
+                    </CTableBody>
+                  </CTable>
+                </>
               )}
 
               {products.length === 0 && !loading && query && (
                 <div className="text-center py-5 text-muted">
-                  <p>Nenhum produto encontrado. Tente outra busca.</p>
+                  <p>Nenhum produto encontrado para "{query}".</p>
+                  <p>Tente outra busca ou verifique a ortografia.</p>
                 </div>
               )}
             </CCardBody>
@@ -283,11 +287,13 @@ const Products = () => {
             <>
               <div className="mb-3">
                 <strong>{selectedProduct.name}</strong>
+                <div className="text-muted">{formatPrice(selectedProduct.price)}</div>
               </div>
               <CInputGroup className="mb-3">
                 <CFormInput
                   value={affiliateLink}
                   readOnly
+                  onClick={(e) => e.target.select()}
                 />
                 <CButton
                   color={copied ? 'success' : 'primary'}
@@ -299,6 +305,7 @@ const Products = () => {
               </CInputGroup>
               <small className="text-muted">
                 Este link rastreia suas vendas e garante suas comissões.
+                Compartilhe em suas redes sociais ou WhatsApp.
               </small>
             </>
           )}

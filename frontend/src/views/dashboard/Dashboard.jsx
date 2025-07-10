@@ -24,6 +24,7 @@ import { CChartBar, CChartLine, CChartDoughnut } from '@coreui/react-chartjs';
 import CIcon from '@coreui/icons-react';
 import { cilOptions, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [metrics, setMetrics] = useState({

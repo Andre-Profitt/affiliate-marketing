@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
+    "api": "node src/api-server.js",
+    "api:dev": "nodemon src/api-server.js",
     "web": "node web/server.js",
     "dev": "nodemon src/index.js",
     "test": "jest"
