@@ -150,3 +150,14 @@ You now have a **professional, beautiful React dashboard** that looks like a $30
 Total implementation time: ~30 minutes 🚀
 
 Enjoy your new dashboard!
+
+
+## 🐛 Troubleshooting Update
+
+### Fixed: CoreUI Icons Import Error
+If you see import errors for '@coreui/icons', run:
+```bash
+./fix-imports.sh
+```
+
+This was already fixed in commit 2803cdb.
