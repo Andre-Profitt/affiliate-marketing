@@ -14,7 +14,7 @@ import campaignRoutes from './routes/campaignRoutes.js';
 import affiliateRoutes from './routes/affiliateRoutes.js';
 
 // Utils
-import logger from './utils/logger.js';
+import { logger } from './utils/logger.js';
 
 // Load environment variables
 dotenv.config();

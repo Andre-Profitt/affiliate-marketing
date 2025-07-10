@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Product from '../models/Product.js';
-import logger from '../utils/logger.js';
+import { logger } from '../utils/logger.js';
 
 // Real Shopee API integration
 export const searchProducts = async (req, res) => {
