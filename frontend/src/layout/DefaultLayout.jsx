@@ -34,7 +34,7 @@ import {
   cilAccountLogout,
   cilMoon,
   cilSun
-} from '@coreui/icons';
+} from '@coreui/icons-react';
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 

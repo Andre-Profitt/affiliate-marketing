@@ -22,7 +22,7 @@ import {
 } from '@coreui/react';
 import { CChartBar, CChartLine, CChartDoughnut } from '@coreui/react-chartjs';
 import CIcon from '@coreui/icons-react';
-import { cilOptions, cilArrowTop, cilArrowBottom } from '@coreui/icons';
+import { cilOptions, cilArrowTop, cilArrowBottom } from '@coreui/icons-react';
 import axios from 'axios';
 
 const Dashboard = () => {
